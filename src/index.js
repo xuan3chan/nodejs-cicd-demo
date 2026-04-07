@@ -137,7 +137,7 @@ const HTML_TEMPLATE = `
       </div>
     </div>
     <div class="footer">
-      Deployed via CI/CD Pipeline 🔄
+      Hello minh xuan Deployed via CI/CD Pipeline 🔄
     </div>
   </div>
 </body>
