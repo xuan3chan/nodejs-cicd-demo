@@ -177,15 +177,19 @@ const server = http.createServer((req, res) => {
   res.end(renderHTML(info));
 });
 
-server.listen(PORT, () => {
-  console.log(`
+// Chỉ khởi động server khi chạy trực tiếp (node src/index.js)
+// KHÔNG khởi động khi require từ test file
+if (require.main === module) {
+  server.listen(PORT, () => {
+    console.log(`
 ╔══════════════════════════════════════════╗
 ║   🚀 Node.js CI/CD Demo Server          ║
 ║   Version: ${APP_VERSION.padEnd(29)}║
 ║   Port:    ${String(PORT).padEnd(29)}║
 ║   Env:     ${NODE_ENV.padEnd(29)}║
 ╚══════════════════════════════════════════╝
-  `);
-});
+    `);
+  });
+}
 
 module.exports = { getHealthInfo, server };
