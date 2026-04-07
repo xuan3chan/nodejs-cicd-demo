@@ -75,12 +75,15 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Download image artifact
         uses: actions/download-artifact@v4
         with:
           name: docker-image
 
-      - name: Deploy to EC2
+      - name: Stop old containers
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -89,25 +92,27 @@ jobs:
           script: |
             echo "🚀 Starting deployment..."
 
-            # Stop old container if running
-            docker stop ${{ env.APP_NAME }} 2>/dev/null || true
-            docker rm ${{ env.APP_NAME }} 2>/dev/null || true
+            # Dừng containers cũ (nếu có)
+            cd ~/app 2>/dev/null && docker compose down 2>/dev/null || true
 
-            # Clean up old images
+            # Dọn dẹp images cũ
             docker image prune -f
 
-            echo "✅ Old container cleaned up"
+            # Tạo thư mục app nếu chưa có
+            mkdir -p ~/app/nginx
 
-      - name: Copy image to EC2
+            echo "✅ Old containers cleaned up"
+
+      - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "image.tar.gz"
-          target: "/tmp/"
+          source: "image.tar.gz,docker-compose.yml,nginx/default.conf"
+          target: "/tmp/deploy"
 
-      - name: Load and run new container
+      - name: Load image and start containers
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -115,29 +120,39 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "📦 Loading Docker image..."
-            docker load < /tmp/image.tar.gz
-            rm /tmp/image.tar.gz
+            docker load < /tmp/deploy/image.tar.gz
 
-            echo "🏃 Starting new container..."
-            docker run -d \
-              --name ${{ env.APP_NAME }} \
-              --restart unless-stopped \
-              -p 3000:3000 \
-              -e NODE_ENV=production \
-              -e APP_VERSION=${{ github.sha }} \
-              --memory=128m \
-              --cpus=0.5 \
-              ${{ env.DOCKER_IMAGE }}:latest
+            echo "📂 Copying config files..."
+            cp /tmp/deploy/docker-compose.yml ~/app/
+            cp /tmp/deploy/nginx/default.conf ~/app/nginx/
+
+            # Dọn file tạm
+            rm -rf /tmp/deploy
+
+            echo "🏃 Starting containers with docker compose..."
+            cd ~/app
+            APP_VERSION=${{ github.sha }} docker compose up -d
 
             echo "⏳ Waiting for health check..."
-            sleep 5
+            sleep 8
 
-            # Health check
-            if curl -sf http://localhost:3000/health > /dev/null; then
+            # Health check qua Nginx (port 80)
+            if curl -sf http://localhost/health > /dev/null; then
               echo "✅ Deployment successful!"
-              curl -s http://localhost:3000/health | python3 -m json.tool
+              echo "── App Health ──"
+              curl -s http://localhost/health | python3 -m json.tool
+              echo ""
+              echo "── Nginx Health ──"
+              curl -s http://localhost/nginx-health
+              echo ""
+              echo "── Container Status ──"
+              docker compose ps
             else
               echo "❌ Health check failed!"
-              docker logs ${{ env.APP_NAME }}
+              echo "── App Logs ──"
+              docker compose logs app
+              echo "── Nginx Logs ──"
+              docker compose logs nginx
               exit 1
             fi
+
