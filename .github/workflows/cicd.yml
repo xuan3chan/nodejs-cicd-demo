@@ -92,8 +92,14 @@ jobs:
           script: |
             echo "🚀 Starting deployment..."
 
-            # Dừng containers cũ (nếu có)
+            # Dừng containers cũ (docker compose)
             cd ~/app 2>/dev/null && docker compose down 2>/dev/null || true
+
+            # Dừng container cũ (docker run từ lần deploy trước)
+            docker stop nodejs-cicd-demo 2>/dev/null || true
+            docker rm nodejs-cicd-demo 2>/dev/null || true
+            docker stop nginx-proxy 2>/dev/null || true
+            docker rm nginx-proxy 2>/dev/null || true
 
             # Dọn dẹp images cũ
             docker image prune -f
