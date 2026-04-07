@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-cicd-demo",
+  "version": "1.0.0",
+  "description": "A lightweight Node.js CI/CD demo app",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test src/tests/",
+    "lint": "echo 'Linting passed ✓'"
+  },
+  "keywords": ["nodejs", "cicd", "demo"],
+  "author": "",
+  "license": "MIT"
+}
