@@ -14,19 +14,19 @@ export default defineConfig({
     },
   },
   build: {
-    // Tắt sourcemap cho production (giảm build time + size)
     sourcemap: false,
-    // Code splitting thông minh
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Tách vendor libs ra chunk riêng → cache lâu dài trên CDN/Browser
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-framer': ['framer-motion'],
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) {
+            return 'vendor-react'
+          }
+          if (id.includes('node_modules/framer-motion')) {
+            return 'vendor-framer'
+          }
         },
       },
     },
-    // Giới hạn cảnh báo chunk size
     chunkSizeWarningLimit: 500,
   },
 })
