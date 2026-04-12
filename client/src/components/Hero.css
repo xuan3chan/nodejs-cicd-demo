@@ -82,12 +82,20 @@
   padding: 0 var(--container-padding);
 }
 
+.hero-badge-container.floating-badge {
+  position: fixed;
+  top: auto;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  display: block;
+}
+
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-lg);
-  margin-bottom: var(--space-xl);
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(10px);
@@ -98,24 +106,100 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.hero-badge:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Scrolled state for floating badge */
+.hero-badge-container.floating-badge.scrolled .hero-badge {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-primary-dark);
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.hero-badge-container.floating-badge.scrolled .hero-badge:hover {
+  background: #ffffff;
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 .hero-badge-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #34D399;
-  animation: pulse-glow 2s ease-in-out infinite;
-  box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+  background: var(--color-success, #10b981);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  display: inline-block;
+}
+
+.hero-badge-arrow {
+  font-size: 0.7rem;
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
+.hero-hours-popup {
+  position: absolute;
+  top: auto;
+  bottom: calc(100% + 12px);
+  right: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 16px 20px;
+  width: 240px;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero-hours-popup::before {
+  content: '';
+  position: absolute;
+  top: auto;
+  bottom: -6px;
+  right: 24px;
+  transform: rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: none;
+  border-left: none;
+}
+
+.hero-hours-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #e2e8f0;
+}
+
+.hero-hours-row span:first-child {
+  color: #94a3b8;
+  font-weight: 500;
 }
 
 .hero-title {
   font-size: clamp(2.8rem, 7vw, 5.5rem);
   font-weight: 700;
   color: var(--color-white);
-  line-height: 1.05;
+  line-height: 1.25;
   margin-bottom: var(--space-xl);
   letter-spacing: -0.02em;
+  padding-top: 0.2em;
 }
 
 .hero-title-accent {
@@ -125,6 +209,8 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-style: italic;
+  padding: 0.3em 0.3em 0.4em 0.2em; /* top right bottom left */
+  margin: -0.3em -0.3em -0.4em -0.2em;
 }
 
 .hero-description {

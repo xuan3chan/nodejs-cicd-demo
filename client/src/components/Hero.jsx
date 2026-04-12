@@ -1,7 +1,34 @@
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useSiteConfig } from '../context/SiteConfigContext'
 import './Hero.css'
 
 export default function Hero() {
+  const { config } = useSiteConfig()
+  const hero = config?.hero || {}
+  const [showHours, setShowHours] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const badgeRef = useRef(null)
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    
+    // Check initial scroll position securely
+    handleScroll()
+
+    const handleClickOutside = (event) => {
+      if (badgeRef.current && !badgeRef.current.contains(event.target)) {
+        setShowHours(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
   return (
     <section className="hero" id="hero">
       {/* Background Pattern */}
@@ -15,6 +42,45 @@ export default function Hero() {
         <div className="hero-floating-circle" />
       </div>
 
+      {/* Floating Hours Badge */}
+      <motion.div
+        className={`hero-badge-container floating-badge ${scrolled ? 'scrolled' : ''}`}
+        ref={badgeRef}
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <button 
+          className="hero-badge"
+          onClick={() => setShowHours(!showHours)}
+        >
+          <span className="hero-badge-dot" />
+          {hero.badge || 'Đang mở cửa'}
+          <span className="hero-badge-arrow">{showHours ? '▼' : '▲'}</span>
+        </button>
+
+        {showHours && (
+          <motion.div 
+            className="hero-hours-popup"
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="hero-hours-row" style={{ color: '#60a5fa', fontSize: '0.8rem', fontWeight: '600', justifyContent: 'center', marginBottom: '4px' }}>
+              Cả Tuần (T2 - CN)
+            </div>
+            <div className="hero-hours-row">
+              <span>Ca Sáng</span>
+              <span>{config?.footer?.morningHours || '06:00 — 12:00'}</span>
+            </div>
+            <div className="hero-hours-row">
+              <span>Ca Chiều</span>
+              <span>{config?.footer?.eveningHours || '16:00 — 22:00'}</span>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
+
       {/* Main Content */}
       <motion.div
         className="hero-content"
@@ -22,24 +88,14 @@ export default function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
       >
-        <motion.div
-          className="hero-badge"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
-          <span className="hero-badge-dot" />
-          Đang mở cửa · 10:00 — 22:00
-        </motion.div>
-
         <motion.h1
           className="hero-title"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.8 }}
         >
-          Trải Nghiệm
-          <span className="hero-title-accent">Ẩm Thực Tinh Tế</span>
+          {hero.title || 'Trải Nghiệm'}
+          <span className="hero-title-accent">{hero.titleAccent || 'Ẩm Thực Tinh Tế'}</span>
         </motion.h1>
 
         <motion.p
@@ -48,9 +104,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.7 }}
         >
-          Nơi hội tụ tinh hoa ẩm thực Việt Nam và quốc tế trong không gian
-          thanh lịch, mang đến cho bạn những khoảnh khắc đáng nhớ bên gia đình
-          và bạn bè.
+          {hero.description || 'Nơi hội tụ tinh hoa ẩm thực Việt Nam và quốc tế trong không gian thanh lịch, mang đến cho bạn những khoảnh khắc đáng nhớ bên gia đình và bạn bè.'}
         </motion.p>
 
         <motion.div
@@ -60,19 +114,14 @@ export default function Hero() {
           transition={{ delay: 0.8, duration: 0.6 }}
         >
           <a href="#menu" className="btn btn-primary" id="hero-cta-menu">
-            Xem Thực Đơn
+            {hero.ctaMenu || 'Xem Thực Đơn'}
           </a>
           <a href="#reservation" className="btn btn-glass" id="hero-cta-reserve">
-            Đặt Bàn Ngay
+            {hero.ctaReserve || 'Đặt Bàn Ngay'}
           </a>
         </motion.div>
       </motion.div>
 
-      {/* Scroll Indicator */}
-      <div className="hero-scroll-indicator">
-        <span>Cuộn xuống</span>
-        <div className="hero-scroll-line" />
-      </div>
 
       {/* Wave Separator */}
       <div className="hero-wave">

@@ -1,24 +1,32 @@
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Menu from './components/Menu'
-import About from './components/About'
-import Gallery from './components/Gallery'
-import Reservation from './components/Reservation'
-import Footer from './components/Footer'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import AdminPage from './pages/admin/AdminPage'
+import LoginPage from './pages/admin/LoginPage'
+
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem('admin_token')
+  if (!token) {
+    return <Navigate to="/admin/login" replace />
+  }
+  return children
+}
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <main>
-        <Hero />
-        <Menu />
-        <About />
-        <Gallery />
-        <Reservation />
-      </main>
-      <Footer />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/admin/login" element={<LoginPage />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

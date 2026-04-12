@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import { useSiteConfig } from '../context/SiteConfigContext'
 import './About.css'
 
-const features = [
+const defaultFeatures = [
   { icon: '🥬', title: 'Nguyên Liệu Tươi', desc: 'Nhập hàng ngày từ nông trại' },
   { icon: '👨‍🍳', title: 'Đầu Bếp Tài Năng', desc: '15+ năm kinh nghiệm' },
   { icon: '🌿', title: 'Công Thức Gia Truyền', desc: 'Hương vị truyền thống' },
@@ -11,6 +12,9 @@ const features = [
 
 export default function About() {
   const [ref, isVisible] = useScrollAnimation()
+  const { config } = useSiteConfig()
+  const about = config?.about || {}
+  const features = about.features || defaultFeatures
 
   return (
     <section className="about-section section" id="about" ref={ref}>
@@ -25,7 +29,7 @@ export default function About() {
           >
             <div className="about-image">
               <img
-                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=500&fit=crop"
+                src={about.image || 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=500&fit=crop'}
                 alt="Không gian nhà hàng Azure Kitchen"
                 loading="lazy"
               />
@@ -37,8 +41,8 @@ export default function About() {
               animate={isVisible ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.4, duration: 0.5 }}
             >
-              <div className="about-floating-card-number">10+</div>
-              <div className="about-floating-card-label">Năm kinh nghiệm</div>
+              <div className="about-floating-card-number">{about.floatingNumber || '10+'}</div>
+              <div className="about-floating-card-label">{about.floatingLabel || 'Năm kinh nghiệm'}</div>
             </motion.div>
           </motion.div>
 
@@ -49,20 +53,15 @@ export default function About() {
             animate={isVisible ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <div className="about-eyebrow">Về Chúng Tôi</div>
+            <div className="about-eyebrow">{about.eyebrow || 'Về Chúng Tôi'}</div>
             <h2 className="section-title">
-              Câu Chuyện Của<br />Azure Kitchen
+              {about.title || 'Câu Chuyện Của'}<br />{about.titleLine2 || 'Azure Kitchen'}
             </h2>
             <p className="about-text">
-              Được thành lập từ niềm đam mê với ẩm thực Việt Nam, Azure Kitchen
-              là nơi giao thoa giữa truyền thống và hiện đại. Mỗi món ăn là một
-              câu chuyện, được chế biến từ những nguyên liệu tươi ngon nhất, theo
-              công thức gia truyền đã được gìn giữ qua nhiều thế hệ.
+              {about.paragraph1 || 'Được thành lập từ niềm đam mê với ẩm thực Việt Nam, Azure Kitchen là nơi giao thoa giữa truyền thống và hiện đại. Mỗi món ăn là một câu chuyện, được chế biến từ những nguyên liệu tươi ngon nhất, theo công thức gia truyền đã được gìn giữ qua nhiều thế hệ.'}
             </p>
             <p className="about-text">
-              Không gian nhà hàng được thiết kế tinh tế với tông xanh dương nhẹ
-              nhàng, mang đến cảm giác thư thái và thanh lịch cho mỗi bữa ăn
-              của bạn.
+              {about.paragraph2 || 'Không gian nhà hàng được thiết kế tinh tế với tông xanh dương nhẹ nhàng, mang đến cảm giác thư thái và thanh lịch cho mỗi bữa ăn của bạn.'}
             </p>
 
             <div className="about-features">
@@ -84,7 +83,7 @@ export default function About() {
             </div>
 
             <a href="#reservation" className="btn btn-primary" id="about-cta">
-              Ghé Thăm Nhà Hàng
+              {about.cta || 'Ghé Thăm Nhà Hàng'}
             </a>
           </motion.div>
         </div>

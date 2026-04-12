@@ -1,7 +1,11 @@
+import { useSiteConfig } from '../context/SiteConfigContext'
 import './Footer.css'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
+  const { config } = useSiteConfig()
+  const footer = config?.footer || {}
+  const contact = config?.contact || {}
 
   return (
     <footer className="footer" id="footer">
@@ -10,18 +14,16 @@ export default function Footer() {
           {/* Brand */}
           <div className="footer-brand">
             <div className="footer-brand-name">
-              <span className="footer-brand-icon">A</span>
-              Azure Kitchen
+              <img alt="BQ79" className="footer-logo-img" src="/logo.png" />
             </div>
             <p className="footer-brand-desc">
-              Nơi hội tụ tinh hoa ẩm thực trong không gian thanh lịch.
-              Chúng tôi mang đến trải nghiệm ẩm thực đáng nhớ cho mỗi thực khách.
+              {footer.brandDesc || 'Nơi hội tụ tinh hoa ẩm thực trong không gian thanh lịch. Chúng tôi mang đến trải nghiệm ẩm thực đáng nhớ cho mỗi thực khách.'}
             </p>
             <div className="footer-socials">
-              <a href="#" className="footer-social-link" aria-label="Facebook" id="social-fb">📘</a>
-              <a href="#" className="footer-social-link" aria-label="Instagram" id="social-ig">📸</a>
-              <a href="#" className="footer-social-link" aria-label="TikTok" id="social-tt">🎵</a>
-              <a href="#" className="footer-social-link" aria-label="YouTube" id="social-yt">▶️</a>
+              <a href={footer.socials?.facebook || '#'} className="footer-social-link" aria-label="Facebook" id="social-fb">📘</a>
+              <a href={footer.socials?.instagram || '#'} className="footer-social-link" aria-label="Instagram" id="social-ig">📸</a>
+              <a href={footer.socials?.tiktok || '#'} className="footer-social-link" aria-label="TikTok" id="social-tt">🎵</a>
+              <a href={footer.socials?.youtube || '#'} className="footer-social-link" aria-label="YouTube" id="social-yt">▶️</a>
             </div>
           </div>
 
@@ -39,12 +41,12 @@ export default function Footer() {
 
           {/* Hours */}
           <div className="footer-column">
-            <h4 className="footer-column-title">Giờ mở cửa</h4>
+            <h4 className="footer-column-title">Giờ mở cửa (Cả Tuần)</h4>
             <div className="footer-links">
-              <span className="footer-link">Thứ 2 — Thứ 6</span>
-              <span className="footer-link" style={{ color: 'rgba(255,255,255,0.7)' }}>10:00 — 22:00</span>
-              <span className="footer-link" style={{ marginTop: '8px' }}>Thứ 7 — Chủ nhật</span>
-              <span className="footer-link" style={{ color: 'rgba(255,255,255,0.7)' }}>09:00 — 23:00</span>
+              <span className="footer-link">Ca Sáng</span>
+              <span className="footer-link" style={{ color: 'rgba(255,255,255,0.7)' }}>{footer.morningHours || '06:00 — 12:00'}</span>
+              <span className="footer-link" style={{ marginTop: '8px' }}>Ca Chiều</span>
+              <span className="footer-link" style={{ color: 'rgba(255,255,255,0.7)' }}>{footer.eveningHours || '16:00 — 22:00'}</span>
             </div>
           </div>
 
@@ -52,10 +54,9 @@ export default function Footer() {
           <div className="footer-column">
             <h4 className="footer-column-title">Liên hệ</h4>
             <div className="footer-links">
-              <span className="footer-link">123 Nguyễn Huệ</span>
-              <span className="footer-link">Quận 1, TP.HCM</span>
-              <span className="footer-link">(028) 3823 4567</span>
-              <a href="mailto:hello@azurekitchen.vn" className="footer-link">hello@azurekitchen.vn</a>
+              <span className="footer-link">{contact.address || '123 Nguyễn Huệ'}</span>
+              <span className="footer-link">{contact.phone || '(028) 3823 4567'}</span>
+              <a href={`mailto:${contact.email || 'hello@azurekitchen.vn'}`} className="footer-link">{contact.email || 'hello@azurekitchen.vn'}</a>
             </div>
           </div>
         </div>
@@ -67,7 +68,7 @@ export default function Footer() {
           </span>
           <div className="footer-bottom-links">
             <a href="#" className="footer-bottom-link">Chính sách bảo mật</a>
-            <a href="#" className="footer-bottom-link">Điều khoản sử dụng</a>
+            <a href="#" className="footer-bottom-link">Thực hiện bởi @TiệmCode</a>
           </div>
         </div>
       </div>

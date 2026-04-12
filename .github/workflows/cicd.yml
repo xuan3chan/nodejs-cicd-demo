@@ -31,8 +31,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
 
-      # --- Frontend Tests ---
+      # --- Frontend ---
       - name: Install client dependencies
         working-directory: ./client
         run: npm ci
@@ -41,7 +45,7 @@ jobs:
         working-directory: ./client
         run: npm run build
 
-      # --- Backend Tests ---
+      # --- Backend ---
       - name: Install server dependencies
         working-directory: ./server
         run: npm ci
@@ -66,20 +70,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} .
-          docker tag ${{ env.DOCKER_IMAGE }}:${{ github.sha }} ${{ env.DOCKER_IMAGE }}:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Save Docker image
-        run: |
-          docker save ${{ env.DOCKER_IMAGE }}:latest | gzip > image.tar.gz
+      - name: Build Docker image (with cache)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+            ${{ env.DOCKER_IMAGE }}:latest
+          outputs: type=docker,dest=/tmp/image.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Compress image
+        run: gzip /tmp/image.tar
 
       - name: Upload image artifact
         uses: actions/upload-artifact@v4
         with:
           name: docker-image
-          path: image.tar.gz
+          path: /tmp/image.tar.gz
           retention-days: 1
 
   # ─────────────────────────────────────────
@@ -109,23 +122,16 @@ jobs:
           script: |
             echo "🚀 Starting deployment..."
 
-            # Dừng containers cũ (docker compose)
             cd ~/app 2>/dev/null && docker compose down 2>/dev/null || true
 
-            # Dừng container cũ (từ lần deploy trước)
             docker stop azure-kitchen 2>/dev/null || true
             docker rm azure-kitchen 2>/dev/null || true
             docker stop nginx-proxy 2>/dev/null || true
             docker rm nginx-proxy 2>/dev/null || true
-
-            # Dọn cũ
             docker stop nodejs-cicd-demo 2>/dev/null || true
             docker rm nodejs-cicd-demo 2>/dev/null || true
 
-            # Dọn dẹp images cũ
             docker image prune -f
-
-            # Tạo thư mục app nếu chưa có
             mkdir -p ~/app/nginx
 
             echo "✅ Old containers cleaned up"
@@ -153,17 +159,24 @@ jobs:
             cp /tmp/deploy/docker-compose.yml ~/app/
             cp /tmp/deploy/nginx/default.conf ~/app/nginx/
 
-            # Dọn file tạm
             rm -rf /tmp/deploy
 
             echo "🏃 Starting containers with docker compose..."
             cd ~/app
-            APP_VERSION=${{ github.sha }} docker compose up -d
+
+            # Truyền biến môi trường từ GitHub Secrets
+            export APP_VERSION=${{ github.sha }}
+            export CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+            export CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+            export CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+            export JWT_SECRET=${{ secrets.JWT_SECRET }}
+            export CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
+
+            docker compose up -d
 
             echo "⏳ Waiting for health check..."
             sleep 12
 
-            # Health check qua Nginx (port 80)
             if curl -sf http://localhost/api/health > /dev/null; then
               echo "✅ Deployment successful!"
               echo "── App Health ──"

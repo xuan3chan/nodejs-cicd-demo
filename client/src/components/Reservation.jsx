@@ -1,18 +1,22 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import { useSiteConfig } from '../context/SiteConfigContext'
 import './Reservation.css'
 
-const contactDetails = [
-  { icon: '📍', title: 'Địa chỉ', text: '123 Nguyễn Huệ, Quận 1, TP.HCM' },
-  { icon: '📞', title: 'Điện thoại', text: '(028) 3823 4567' },
-  { icon: '🕐', title: 'Giờ mở cửa', text: '10:00 — 22:00 hàng ngày' },
-  { icon: '📧', title: 'Email', text: 'hello@azurekitchen.vn' },
-]
+
 
 export default function Reservation() {
   const [ref, isVisible] = useScrollAnimation()
   const [submitted, setSubmitted] = useState(false)
+  const { config } = useSiteConfig()
+  const contact = config?.contact || {}
+  const contactDetails = [
+    { icon: '📍', title: 'Địa chỉ', text: contact.address || '123 Nguyễn Huệ, Quận 1, TP.HCM' },
+    { icon: '📞', title: 'Điện thoại', text: contact.phone || '(028) 3823 4567' },
+    { icon: '🕐', title: 'Giờ mở cửa', text: contact.hours || '10:00 — 22:00 hàng ngày' },
+    { icon: '📧', title: 'Email', text: contact.email || 'hello@azurekitchen.vn' },
+  ]
   const [formData, setFormData] = useState({
     name: '',
     phone: '',

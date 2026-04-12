@@ -33,8 +33,7 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
       <div className="navbar-inner">
         <a href="#" className="navbar-logo">
-          <span className="navbar-logo-icon">A</span>
-          Azure Kitchen
+          <img src="/logo.png" alt="BQ79" className="navbar-logo-img" />
         </a>
 
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
