@@ -13,7 +13,10 @@ export class ReservationService {
   private reservations: Reservation[] = [];
   private nextId = 1;
 
-  create(dto: CreateReservationDto): { message: string; reservation: Reservation } {
+  create(dto: CreateReservationDto): {
+    message: string;
+    reservation: Reservation;
+  } {
     const reservation: Reservation = {
       ...dto,
       id: this.nextId++,
@@ -22,7 +25,9 @@ export class ReservationService {
     };
 
     this.reservations.push(reservation);
-    this.logger.log(`📋 New reservation from ${dto.name} - ${dto.phone} for ${dto.date} at ${dto.time} (${dto.guests} guests)`);
+    this.logger.log(
+      `📋 New reservation from ${dto.name} - ${dto.phone} for ${dto.date} at ${dto.time} (${dto.guests} guests)`,
+    );
 
     return {
       message: 'Đặt bàn thành công! Chúng tôi sẽ liên hệ xác nhận.',
