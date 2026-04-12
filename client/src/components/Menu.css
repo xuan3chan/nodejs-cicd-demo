@@ -1,0 +1,186 @@
+/* ============================================
+   MENU — Restaurant Menu Section
+   ============================================ */
+
+.menu-section {
+  padding: var(--space-5xl) 0;
+  background: var(--color-off-white);
+  position: relative;
+}
+
+.menu-header {
+  text-align: center;
+  margin-bottom: var(--space-3xl);
+}
+
+.menu-header .section-title {
+  margin-bottom: var(--space-md);
+}
+
+.menu-categories {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-3xl);
+  flex-wrap: wrap;
+  padding: 0 var(--space-md);
+}
+
+.menu-category-btn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-gray-400);
+  background: transparent;
+  border: 1.5px solid var(--color-gray-100);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.menu-category-btn:hover {
+  border-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.menu-category-btn.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: var(--color-white);
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-xl);
+}
+
+.menu-item {
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  border: 1px solid rgba(59, 130, 246, 0.06);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary-lighter), var(--color-primary), var(--color-accent-light));
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.menu-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.1);
+}
+
+.menu-item:hover::before {
+  opacity: 1;
+}
+
+.menu-item-image {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+  position: relative;
+}
+
+.menu-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.menu-item:hover .menu-item-image img {
+  transform: scale(1.05);
+}
+
+.menu-item-tag {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  color: var(--color-primary-dark);
+}
+
+.menu-item-tag.popular {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.menu-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
+  gap: var(--space-md);
+}
+
+.menu-item-name {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text-heading);
+  line-height: 1.3;
+}
+
+.menu-item-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.menu-item-description {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  line-height: 1.6;
+}
+
+/* Decorative dots line between name and price */
+.menu-item-dots {
+  flex: 1;
+  border-bottom: 2px dotted var(--color-gray-100);
+  margin: 0 var(--space-sm);
+  min-width: 20px;
+  align-self: center;
+}
+
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .menu-categories {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: var(--space-sm);
+  }
+
+  .menu-categories::-webkit-scrollbar {
+    display: none;
+  }
+}

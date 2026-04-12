@@ -1,65 +1,64 @@
 # =============================================
-# Multi-stage Build - Node.js CI/CD Demo
-# Stage 1: base  → Cài đặt chung
-# Stage 2: deps  → Cài dependencies
-# Stage 3: test  → Chạy test (bỏ sau khi build)
-# Stage 4: prod  → Image cuối cùng, siêu nhẹ
+# Multi-stage Build - Azure Kitchen Fullstack
+# Stage 1: client-build → Build React (Vite)
+# Stage 2: server-build → Build NestJS
+# Stage 3: production  → Image cuối cùng
 # =============================================
 
 
 # ─────────────────────────────────────────────
-# Stage 1: BASE — Image nền dùng chung
+# Stage 1: CLIENT BUILD — Build React với Vite
 # ─────────────────────────────────────────────
-FROM node:20-alpine AS base
-WORKDIR /app
-COPY package.json package-lock.json* ./
+FROM node:20-alpine AS client-build
+WORKDIR /app/client
 
+# Copy package files trước (tận dụng Docker cache)
+COPY client/package.json client/package-lock.json* ./
+RUN npm ci --prefer-offline
 
-# ─────────────────────────────────────────────
-# Stage 2: DEPS — Cài đặt dependencies
-# ─────────────────────────────────────────────
-FROM base AS deps
-
-# Cài tất cả dependencies (bao gồm devDependencies cho test)
-RUN if [ -f package-lock.json ]; then \
-      npm ci; \
-    elif [ -f package.json ]; then \
-      npm install; \
-    fi
+# Copy source và build
+COPY client/ ./
+RUN npm run build
 
 
 # ─────────────────────────────────────────────
-# Stage 3: TEST — Chạy lint + test
-# Stage này chỉ dùng để kiểm tra, KHÔNG đưa
-# vào image cuối cùng → giảm kích thước image
+# Stage 2: SERVER BUILD — Build NestJS
 # ─────────────────────────────────────────────
-FROM deps AS test
-COPY src/ ./src/
-RUN npm run lint
-RUN npm test
+FROM node:20-alpine AS server-build
+WORKDIR /app/server
+
+# Copy package files trước
+COPY server/package.json server/package-lock.json* ./
+RUN npm ci --prefer-offline
+
+# Copy source và build
+COPY server/ ./
+RUN npm run build
 
 
 # ─────────────────────────────────────────────
-# Stage 4: PRODUCTION — Image cuối cùng
+# Stage 3: PRODUCTION — Image cuối cùng
 # Chỉ chứa những gì cần thiết để chạy app
 # ─────────────────────────────────────────────
 FROM node:20-alpine AS production
 
 LABEL maintainer="your-email@example.com"
-LABEL description="Node.js CI/CD Demo App"
+LABEL description="Azure Kitchen - Restaurant Website (NestJS + React)"
 
 WORKDIR /app
 
-# Copy package.json (metadata)
-COPY --from=base /app/package.json ./
+# Copy server package.json và cài production dependencies
+COPY server/package.json server/package-lock.json* ./
+RUN npm ci --only=production --prefer-offline && npm cache clean --force
 
-# Copy production dependencies (nếu có)
-# Dùng --from=deps để lấy node_modules đã cài từ stage deps
-# Wildcard * để không lỗi nếu thư mục chưa tồn tại
-COPY --from=deps /app/node_modules* ./node_modules/
+# Copy NestJS build output
+COPY --from=server-build /app/server/dist ./dist
 
-# Copy source code — CHỈ file cần chạy, không copy tests
-COPY src/index.js ./src/
+# Copy Handlebars views
+COPY --from=server-build /app/server/views ./views
+
+# Copy React build output → serve as static files
+COPY --from=client-build /app/client/dist ./public
 
 # Tạo user riêng (không dùng root → bảo mật hơn)
 RUN addgroup -g 1001 -S appgroup && \
@@ -76,8 +75,8 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Docker tự kiểm tra sức khỏe container mỗi 30s
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
 
-# Lệnh khởi chạy app
-CMD ["node", "src/index.js"]
+# Lệnh khởi chạy NestJS
+CMD ["node", "dist/main.js"]

@@ -1,6 +1,7 @@
 # =============================================
 # GitHub Actions CI/CD Pipeline
-# Node.js App → Docker → Deploy to EC2
+# Azure Kitchen Fullstack (React + NestJS)
+# → Docker → Deploy to EC2
 # =============================================
 
 name: CI/CD Pipeline
@@ -12,12 +13,12 @@ on:
     branches: [main]
 
 env:
-  APP_NAME: nodejs-cicd-demo
-  DOCKER_IMAGE: nodejs-cicd-demo
+  APP_NAME: azure-kitchen
+  DOCKER_IMAGE: azure-kitchen
 
 jobs:
   # ─────────────────────────────────────────
-  # Job 1: Test
+  # Job 1: Test Frontend + Backend
   # ─────────────────────────────────────────
   test:
     name: 🧪 Run Tests
@@ -31,10 +32,26 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run linting
+      # --- Frontend Tests ---
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: Build client (type check)
+        working-directory: ./client
+        run: npm run build
+
+      # --- Backend Tests ---
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Run server lint
+        working-directory: ./server
         run: npm run lint
 
-      - name: Run tests
+      - name: Run server tests
+        working-directory: ./server
         run: npm test
 
   # ─────────────────────────────────────────
@@ -95,11 +112,15 @@ jobs:
             # Dừng containers cũ (docker compose)
             cd ~/app 2>/dev/null && docker compose down 2>/dev/null || true
 
-            # Dừng container cũ (docker run từ lần deploy trước)
-            docker stop nodejs-cicd-demo 2>/dev/null || true
-            docker rm nodejs-cicd-demo 2>/dev/null || true
+            # Dừng container cũ (từ lần deploy trước)
+            docker stop azure-kitchen 2>/dev/null || true
+            docker rm azure-kitchen 2>/dev/null || true
             docker stop nginx-proxy 2>/dev/null || true
             docker rm nginx-proxy 2>/dev/null || true
+
+            # Dọn cũ
+            docker stop nodejs-cicd-demo 2>/dev/null || true
+            docker rm nodejs-cicd-demo 2>/dev/null || true
 
             # Dọn dẹp images cũ
             docker image prune -f
@@ -140,13 +161,13 @@ jobs:
             APP_VERSION=${{ github.sha }} docker compose up -d
 
             echo "⏳ Waiting for health check..."
-            sleep 8
+            sleep 12
 
             # Health check qua Nginx (port 80)
-            if curl -sf http://localhost/health > /dev/null; then
+            if curl -sf http://localhost/api/health > /dev/null; then
               echo "✅ Deployment successful!"
               echo "── App Health ──"
-              curl -s http://localhost/health | python3 -m json.tool
+              curl -s http://localhost/api/health | python3 -m json.tool
               echo ""
               echo "── Nginx Health ──"
               curl -s http://localhost/nginx-health
@@ -161,4 +182,3 @@ jobs:
               docker compose logs nginx
               exit 1
             fi
-

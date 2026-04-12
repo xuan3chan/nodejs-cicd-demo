@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <style>
+    body { font-family: 'Inter', sans-serif; text-align: center; padding: 4rem 2rem; background: #f8fafc; color: #1e293b; }
+    h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    p { color: #64748b; font-size: 1.1rem; }
+    a { color: #3b82f6; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>🍽️ {{message}}</h1>
+  <p>API server is running. Visit <a href="http://localhost:5173">frontend</a> for the full experience.</p>
+  <p style="margin-top: 2rem; font-size: 0.85rem; color: #94a3b8;">
+    API Endpoints: 
+    <a href="/api/health">/api/health</a> · 
+    <a href="/api/menu">/api/menu</a> · 
+    <a href="/api/menu/categories">/api/menu/categories</a>
+  </p>
+</body>
+</html>
