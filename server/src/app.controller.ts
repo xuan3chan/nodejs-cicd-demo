@@ -1,6 +1,7 @@
 import { Controller, Get, Res, Req } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { join } from 'path';
+import { existsSync } from 'fs';
 import { AppService } from './app.service';
 
 @Controller()
@@ -13,24 +14,37 @@ export class AppController {
    * In development, Vite dev server handles the frontend.
    */
   @Get()
-  root(@Req() req: Request, @Res() res: Response) {
+  root(@Res() res: Response) {
+    return this.serveIndex(res);
+  }
+
+  /**
+   * Catch-all: trả về index.html cho mọi route không khớp (React Router)
+   * Route này được đặt cuối cùng, sau tất cả các API routes khác.
+   */
+  @Get('*')
+  catchAll(@Res() res: Response) {
+    return this.serveIndex(res);
+  }
+
+  private serveIndex(res: Response) {
     const indexPath = join(__dirname, '..', 'public', 'index.html');
 
-    // Nếu file index.html tồn tại (production), serve nó
-    try {
+    if (existsSync(indexPath)) {
       return res.sendFile(indexPath);
-    } catch {
-      // Development: trả về API info
-      return res.json({
-        app: 'Azure Kitchen API',
-        message: this.appService.getWelcomeMessage(),
-        docs: {
-          health: '/api/health',
-          menu: '/api/menu',
-          categories: '/api/menu/categories',
-          reservation: 'POST /api/reservation',
-        },
-      });
     }
+
+    // Development: trả về API info
+    return res.json({
+      app: 'Azure Kitchen API',
+      message: this.appService.getWelcomeMessage(),
+      docs: {
+        health: '/api/health',
+        menu: '/api/menu',
+        categories: '/api/menu/categories',
+        reservation: 'POST /api/reservation',
+      },
+    });
   }
 }
+

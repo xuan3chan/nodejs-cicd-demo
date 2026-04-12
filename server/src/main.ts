@@ -44,7 +44,10 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
 
-
+  // ── Static files (serve React build assets: JS, CSS, images) ──
+  app.useStaticAssets(join(__dirname, '..', 'public'), {
+    maxAge: isProd ? '30d' : 0,
+  });
 
   // ── Graceful Shutdown (cho Docker/K8s SIGTERM) ──
   app.enableShutdownHooks();
