@@ -166,9 +166,9 @@ export class SeedService implements OnModuleInit {
         value: {
           eyebrow: 'Về Chúng Tôi',
           title: 'Câu Chuyện Của',
-          titleLine2: 'Azure Kitchen',
+          titleLine2: 'Bún Quậy 79',
           paragraph1:
-            'Được thành lập từ niềm đam mê với ẩm thực Việt Nam, Azure Kitchen là nơi giao thoa giữa truyền thống và hiện đại. Mỗi món ăn là một câu chuyện, được chế biến từ những nguyên liệu tươi ngon nhất, theo công thức gia truyền đã được gìn giữ qua nhiều thế hệ.',
+            'Được thành lập từ niềm đam mê với ẩm thực Việt Nam, Bún Quậy 79 là nơi giao thoa giữa truyền thống và hiện đại. Mỗi món ăn là một câu chuyện, được chế biến từ những nguyên liệu tươi ngon nhất, theo công thức gia truyền đã được gìn giữ qua nhiều thế hệ.',
           paragraph2:
             'Không gian nhà hàng được thiết kế tinh tế với tông xanh dương nhẹ nhàng, mang đến cảm giác thư thái và thanh lịch cho mỗi bữa ăn của bạn.',
           image:
@@ -205,7 +205,7 @@ export class SeedService implements OnModuleInit {
         value: {
           title: 'Bộ Sưu Tập Hình Ảnh',
           subtitle:
-            'Khám phá không gian ấm cúng và những món ăn tuyệt vời tại Azure Kitchen',
+            'Khám phá không gian ấm cúng và những món ăn tuyệt vời tại Bún Quậy 79',
           images: [
             {
               src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop',
@@ -246,7 +246,7 @@ export class SeedService implements OnModuleInit {
           address: '123 Nguyễn Huệ, Quận 1, TP.HCM',
           phone: '(028) 3823 4567',
           hours: '10:00 — 22:00 hàng ngày',
-          email: 'hello@azurekitchen.vn',
+          email: 'hello@bunquay79.io.vn',
         },
       },
       {

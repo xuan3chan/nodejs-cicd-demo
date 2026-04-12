@@ -70,7 +70,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="footer-bottom">
           <span className="footer-copyright">
-            © {currentYear} Azure Kitchen. Tất cả quyền được bảo lưu.
+            © {currentYear} Bún Quậy 79. Tất cả quyền được bảo lưu.
           </span>
           <div className="footer-bottom-links">
             <a href="#" className="footer-bottom-link">Chính sách bảo mật</a>

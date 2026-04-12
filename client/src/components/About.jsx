@@ -30,7 +30,7 @@ export default function About() {
             <div className="about-image">
               <img
                 src={about.image || 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=500&fit=crop'}
-                alt="Không gian nhà hàng Azure Kitchen"
+                alt="Không gian nhà hàng Bún Quậy 79"
                 loading="lazy"
               />
               <div className="about-image-overlay" />
@@ -55,10 +55,10 @@ export default function About() {
           >
             <div className="about-eyebrow">{about.eyebrow || 'Về Chúng Tôi'}</div>
             <h2 className="section-title">
-              {about.title || 'Câu Chuyện Của'}<br />{about.titleLine2 || 'Azure Kitchen'}
+              {about.title || 'Câu Chuyện Của'}<br />{about.titleLine2 || 'Bún Quậy 79'}
             </h2>
             <p className="about-text">
-              {about.paragraph1 || 'Được thành lập từ niềm đam mê với ẩm thực Việt Nam, Azure Kitchen là nơi giao thoa giữa truyền thống và hiện đại. Mỗi món ăn là một câu chuyện, được chế biến từ những nguyên liệu tươi ngon nhất, theo công thức gia truyền đã được gìn giữ qua nhiều thế hệ.'}
+              {about.paragraph1 || 'Được thành lập từ niềm đam mê với ẩm thực Việt Nam, Bún Quậy 79 là nơi giao thoa giữa truyền thống và hiện đại. Mỗi món ăn là một câu chuyện, được chế biến từ những nguyên liệu tươi ngon nhất, theo công thức gia truyền đã được gìn giữ qua nhiều thế hệ.'}
             </p>
             <p className="about-text">
               {about.paragraph2 || 'Không gian nhà hàng được thiết kế tinh tế với tông xanh dương nhẹ nhàng, mang đến cảm giác thư thái và thanh lịch cho mỗi bữa ăn của bạn.'}

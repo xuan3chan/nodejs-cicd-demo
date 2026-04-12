@@ -1,5 +1,5 @@
 # =============================================
-# Multi-stage Build - Azure Kitchen Fullstack
+# Multi-stage Build - Bún Quậy 79 Fullstack
 # Stage 1: client-build → Build React (Vite)
 # Stage 2: server-build → Build NestJS
 # Stage 3: production  → Image cuối cùng
@@ -43,7 +43,7 @@ RUN npm run build
 FROM node:20-alpine AS production
 
 LABEL maintainer="your-email@example.com"
-LABEL description="Azure Kitchen - Restaurant Website (NestJS + React)"
+LABEL description="Bún Quậy 79 - Restaurant Website (NestJS + React)"
 
 WORKDIR /app
 

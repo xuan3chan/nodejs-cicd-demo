@@ -55,7 +55,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(
-    `🚀 Azure Kitchen [${isProd ? 'PROD' : 'DEV'}] running on http://localhost:${port}`,
+    `🚀 Bún Quậy 79 [${isProd ? 'PROD' : 'DEV'}] running on http://localhost:${port}`,
   );
 }
 void bootstrap();

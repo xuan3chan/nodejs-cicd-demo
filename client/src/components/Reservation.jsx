@@ -15,7 +15,7 @@ export default function Reservation() {
     { icon: '📍', title: 'Địa chỉ', text: contact.address || '123 Nguyễn Huệ, Quận 1, TP.HCM' },
     { icon: '📞', title: 'Điện thoại', text: contact.phone || '(028) 3823 4567' },
     { icon: '🕐', title: 'Giờ mở cửa', text: contact.hours || '10:00 — 22:00 hàng ngày' },
-    { icon: '📧', title: 'Email', text: contact.email || 'hello@azurekitchen.vn' },
+    { icon: '📧', title: 'Email', text: contact.email || 'hello@bunquay79.io.vn' },
   ]
   const [formData, setFormData] = useState({
     name: '',

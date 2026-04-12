@@ -1,7 +1,7 @@
 {
   "name": "azure-kitchen",
   "version": "1.0.0",
-  "description": "Azure Kitchen - Restaurant Website (NestJS + React)",
+  "description": "Bún Quậy 79 - Restaurant Website (NestJS + React)",
   "private": true,
   "scripts": {
     "dev:client": "cd client && npm run dev",

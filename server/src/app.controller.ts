@@ -36,7 +36,7 @@ export class AppController {
 
     // Development: trả về API info
     return res.json({
-      app: 'Azure Kitchen API',
+      app: 'Bún Quậy 79 API',
       message: this.appService.getWelcomeMessage(),
       docs: {
         health: '/api/health',

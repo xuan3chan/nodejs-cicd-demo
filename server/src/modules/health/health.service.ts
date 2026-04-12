@@ -16,7 +16,7 @@ export class HealthService {
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
-      service: 'Azure Kitchen API',
+      service: 'Bún Quậy 79 API',
       version: '1.0.0',
       database: isDbConnected ? 'connected' : 'disconnected',
     };

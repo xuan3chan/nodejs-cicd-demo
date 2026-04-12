@@ -31,7 +31,7 @@ export default function AdminPage() {
         <Link to="/" className="admin-sidebar-brand">
           <span className="admin-brand-icon">A</span>
           <div>
-            <div className="admin-brand-name">Azure Kitchen</div>
+            <div className="admin-brand-name">Bún Quậy 79</div>
             <div className="admin-brand-label">Admin Panel</div>
           </div>
         </Link>

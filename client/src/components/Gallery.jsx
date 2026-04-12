@@ -46,7 +46,7 @@ export default function Gallery() {
         >
           <h2 className="section-title">{gallery.title || 'Bộ Sưu Tập'}</h2>
           <p className="section-subtitle" style={{ margin: '0 auto' }}>
-            {gallery.subtitle || 'Khám phá không gian ấm cúng và những món ăn tuyệt vời tại Azure Kitchen'}
+            {gallery.subtitle || 'Khám phá không gian ấm cúng và những món ăn tuyệt vời tại Bún Quậy 79'}
           </p>
         </motion.div>
 

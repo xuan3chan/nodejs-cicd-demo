@@ -14,7 +14,7 @@ describe('AppController', () => {
     it('should return welcome message', () => {
       const appService = new AppService();
       expect(appService.getWelcomeMessage()).toBe(
-        'Chào mừng đến với Azure Kitchen!',
+        'Chào mừng đến với Bún Quậy 79!',
       );
     });
   });

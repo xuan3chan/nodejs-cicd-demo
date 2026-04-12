@@ -51,7 +51,7 @@ export default function LoginPage() {
           <div className="login-logo">
             <span className="login-logo-icon">A</span>
           </div>
-          <h1 className="login-title">Azure Kitchen</h1>
+          <h1 className="login-title">Bún Quậy 79</h1>
           <p className="login-subtitle">Đăng nhập vào Admin Panel</p>
         </div>
 
