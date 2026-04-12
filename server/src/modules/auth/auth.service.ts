@@ -14,8 +14,13 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(dto: LoginDto): Promise<{ access_token: string; admin: { id: number; username: string; role: string } }> {
-    const admin = await this.adminRepo.findOne({ where: { username: dto.username } });
+  async login(dto: LoginDto): Promise<{
+    access_token: string;
+    admin: { id: number; username: string; role: string };
+  }> {
+    const admin = await this.adminRepo.findOne({
+      where: { username: dto.username },
+    });
     if (!admin) {
       throw new UnauthorizedException('Tên đăng nhập hoặc mật khẩu không đúng');
     }
@@ -25,7 +30,11 @@ export class AuthService {
       throw new UnauthorizedException('Tên đăng nhập hoặc mật khẩu không đúng');
     }
 
-    const payload = { sub: admin.id, username: admin.username, role: admin.role };
+    const payload = {
+      sub: admin.id,
+      username: admin.username,
+      role: admin.role,
+    };
     return {
       access_token: this.jwtService.sign(payload),
       admin: {

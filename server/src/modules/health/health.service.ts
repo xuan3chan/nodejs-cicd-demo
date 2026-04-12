@@ -5,11 +5,11 @@ import { DataSource } from 'typeorm';
 export class HealthService {
   constructor(private readonly dataSource: DataSource) {}
 
-  async check() {
+  check() {
     let isDbConnected = false;
     try {
       isDbConnected = this.dataSource.isInitialized;
-    } catch (e) {
+    } catch {
       isDbConnected = false;
     }
 

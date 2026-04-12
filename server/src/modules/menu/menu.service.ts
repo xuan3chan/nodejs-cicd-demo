@@ -41,7 +41,10 @@ export class MenuService {
     return this.menuRepository.save(newItem);
   }
 
-  async update(id: number, updateDto: UpdateMenuItemDto): Promise<MenuItemEntity> {
+  async update(
+    id: number,
+    updateDto: UpdateMenuItemDto,
+  ): Promise<MenuItemEntity> {
     const item = await this.findOne(id);
     Object.assign(item, updateDto);
     return this.menuRepository.save(item);

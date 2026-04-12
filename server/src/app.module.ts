@@ -43,10 +43,12 @@ import { UploadModule } from './modules/upload/upload.module';
       }),
     }),
     // Rate Limiting: 60 requests / 60 giây / mỗi IP
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 60,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 60,
+      },
+    ]),
     DatabaseModule,
     AuthModule,
     MenuModule,

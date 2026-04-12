@@ -6,7 +6,9 @@ import { SiteConfigEntity } from '../entities/site-config.entity';
 import { SeedService } from './seed.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MenuItemEntity, AdminEntity, SiteConfigEntity])],
+  imports: [
+    TypeOrmModule.forFeature([MenuItemEntity, AdminEntity, SiteConfigEntity]),
+  ],
   providers: [SeedService],
 })
 export class DatabaseModule {}

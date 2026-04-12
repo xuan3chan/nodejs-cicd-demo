@@ -14,7 +14,9 @@ export class UploadService {
 
   async uploadImage(file: Express.Multer.File): Promise<string> {
     if (!process.env.CLOUDINARY_API_SECRET) {
-      throw new InternalServerErrorException('Missing CLOUDINARY_API_SECRET in .env file');
+      throw new InternalServerErrorException(
+        'Missing CLOUDINARY_API_SECRET in .env file',
+      );
     }
 
     return new Promise((resolve, reject) => {
@@ -30,7 +32,9 @@ export class UploadService {
         (error, result) => {
           if (error || !result) {
             console.error('Cloudinary upload error:', error);
-            return reject(new InternalServerErrorException('Image upload failed'));
+            return reject(
+              new InternalServerErrorException('Image upload failed'),
+            );
           }
           resolve(result.secure_url);
         },
@@ -41,7 +45,9 @@ export class UploadService {
 
   async uploadVideo(file: Express.Multer.File): Promise<string> {
     if (!process.env.CLOUDINARY_API_SECRET) {
-      throw new InternalServerErrorException('Missing CLOUDINARY_API_SECRET in .env file');
+      throw new InternalServerErrorException(
+        'Missing CLOUDINARY_API_SECRET in .env file',
+      );
     }
 
     return new Promise((resolve, reject) => {
@@ -54,14 +60,14 @@ export class UploadService {
           // Giới hạn chất lượng để tiết kiệm dung lượng Cloudinary
           quality: 'auto:good',
           // Giới hạn kích thước video (720p max)
-          transformation: [
-            { width: 1280, height: 720, crop: 'limit' },
-          ],
+          transformation: [{ width: 1280, height: 720, crop: 'limit' }],
         },
         (error, result) => {
           if (error || !result) {
             console.error('Cloudinary video upload error:', error);
-            return reject(new InternalServerErrorException('Video upload failed'));
+            return reject(
+              new InternalServerErrorException('Video upload failed'),
+            );
           }
           resolve(result.secure_url);
         },
@@ -78,19 +84,22 @@ export class UploadService {
       const parts = url.split('/');
       const uploadIndex = parts.indexOf('upload');
       if (uploadIndex === -1) return false;
-      
+
       const publicIdWithExt = parts.slice(uploadIndex + 2).join('/');
-      const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf('.'));
-      
+      const publicId = publicIdWithExt.substring(
+        0,
+        publicIdWithExt.lastIndexOf('.'),
+      );
+
       if (!publicId) return false;
 
       // Phát hiện loại resource dựa trên URL path
       const isVideo = url.includes('/video/upload/');
       const resourceType = isVideo ? 'video' : 'image';
 
-      const result = await cloudinary.uploader.destroy(publicId, {
+      const result = (await cloudinary.uploader.destroy(publicId, {
         resource_type: resourceType,
-      });
+      })) as { result: string };
       return result.result === 'ok';
     } catch (error) {
       console.error('Failed to delete from Cloudinary:', error);
