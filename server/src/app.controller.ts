@@ -22,11 +22,6 @@ export class AppController {
    * Catch-all: trả về index.html cho mọi route không khớp (React Router)
    * Route này được đặt cuối cùng, sau tất cả các API routes khác.
    */
-  @Get('*')
-  catchAll(@Res() res: Response) {
-    return this.serveIndex(res);
-  }
-
   private serveIndex(res: Response) {
     const indexPath = join(__dirname, '..', 'public', 'index.html');
 
