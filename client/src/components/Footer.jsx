@@ -54,7 +54,13 @@ export default function Footer() {
           <div className="footer-column">
             <h4 className="footer-column-title">Liên hệ</h4>
             <div className="footer-links">
-              <span className="footer-link">{contact.address || '123 Nguyễn Huệ'}</span>
+              {contact.mapUrl ? (
+                <a href={contact.mapUrl} target="_blank" rel="noopener noreferrer" className="footer-link" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', color: 'inherit' }}>
+                  {contact.address || '123 Nguyễn Huệ'}
+                </a>
+              ) : (
+                <span className="footer-link" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{contact.address || '123 Nguyễn Huệ'}</span>
+              )}
               <span className="footer-link">{contact.phone || '(028) 3823 4567'}</span>
               <a href={`mailto:${contact.email || 'hello@azurekitchen.vn'}`} className="footer-link">{contact.email || 'hello@azurekitchen.vn'}</a>
             </div>

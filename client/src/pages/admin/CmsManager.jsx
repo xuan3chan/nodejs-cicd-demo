@@ -428,7 +428,8 @@ function renderGalleryForm(data, updateField, updateArrayItem, addArrayItem, rem
 function renderContactForm(data, updateField) {
   return (
     <div className="cms-form">
-      <Field label="Địa chỉ" value={data.address} onChange={(v) => updateField('contact', 'address', v)} />
+      <Field label="Địa chỉ" value={data.address} onChange={(v) => updateField('contact', 'address', v)} type="textarea" rows={3} />
+      <Field label="Link Google Map" value={data.mapUrl} onChange={(v) => updateField('contact', 'mapUrl', v)} />
       <div className="admin-form-grid">
         <Field label="Số điện thoại" value={data.phone} onChange={(v) => updateField('contact', 'phone', v)} />
         <Field label="Email" value={data.email} onChange={(v) => updateField('contact', 'email', v)} />
