@@ -3,6 +3,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getWelcomeMessage(): string {
-    return 'Welcome to Bun Quay 79!';
+    return 'Chào mừng đến với Bún Quậy 79!';
   }
 }
