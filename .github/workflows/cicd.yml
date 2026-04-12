@@ -1,6 +1,6 @@
 # =============================================
 # GitHub Actions CI/CD Pipeline
-# Azure Kitchen Fullstack (React + NestJS)
+# Bún Quậy 79 Fullstack (React + NestJS)
 # → Docker → Deploy to EC2
 # =============================================
 
@@ -113,7 +113,7 @@ jobs:
         with:
           name: docker-image
 
-      - name: Stop old containers
+      - name: Prepare EC2 (stop app + nginx only, keep DB)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -121,20 +121,17 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "🚀 Starting deployment..."
-
-            cd ~/app 2>/dev/null && docker compose down 2>/dev/null || true
-
-            docker stop azure-kitchen 2>/dev/null || true
-            docker rm azure-kitchen 2>/dev/null || true
-            docker stop nginx-proxy 2>/dev/null || true
-            docker rm nginx-proxy 2>/dev/null || true
-            docker stop nodejs-cicd-demo 2>/dev/null || true
-            docker rm nodejs-cicd-demo 2>/dev/null || true
-
-            docker image prune -f
+            cd ~/app 2>/dev/null || mkdir -p ~/app
             mkdir -p ~/app/nginx
 
-            echo "✅ Old containers cleaned up"
+            # Chỉ dừng app và nginx — GIỮ NGUYÊN postgres + redis
+            docker stop azure-kitchen nginx-proxy 2>/dev/null || true
+            docker rm azure-kitchen nginx-proxy 2>/dev/null || true
+
+            # Dọn image cũ không sử dụng
+            docker image prune -f
+
+            echo "✅ App containers cleaned (DB + Redis preserved)"
 
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -175,23 +172,20 @@ jobs:
             docker compose up -d
 
             echo "⏳ Waiting for health check..."
-            sleep 12
+            sleep 15
 
             if curl -sf http://localhost/api/health > /dev/null; then
               echo "✅ Deployment successful!"
               echo "── App Health ──"
               curl -s http://localhost/api/health | python3 -m json.tool
               echo ""
-              echo "── Nginx Health ──"
-              curl -s http://localhost/nginx-health
-              echo ""
               echo "── Container Status ──"
               docker compose ps
             else
               echo "❌ Health check failed!"
               echo "── App Logs ──"
-              docker compose logs app
+              docker compose logs app --tail=50
               echo "── Nginx Logs ──"
-              docker compose logs nginx
+              docker compose logs nginx --tail=20
               exit 1
             fi
