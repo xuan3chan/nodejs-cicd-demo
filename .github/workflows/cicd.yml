@@ -1,9 +1,3 @@
-# =============================================
-# GitHub Actions CI/CD Pipeline
-# Bún Quậy 79 Fullstack (React + NestJS)
-# → Docker → Deploy to EC2
-# =============================================
-
 name: CI/CD Pipeline
 
 on:
@@ -13,15 +7,12 @@ on:
     branches: [main]
 
 env:
-  APP_NAME: azure-kitchen
-  DOCKER_IMAGE: azure-kitchen
+  BACKEND_IMAGE: azure-kitchen-backend
+  FRONTEND_IMAGE: azure-kitchen-frontend
 
 jobs:
-  # ─────────────────────────────────────────
-  # Job 1: Test Frontend + Backend
-  # ─────────────────────────────────────────
   test:
-    name: 🧪 Run Tests
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -30,22 +21,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: npm
           cache-dependency-path: |
             client/package-lock.json
             server/package-lock.json
 
-      # --- Frontend ---
       - name: Install client dependencies
         working-directory: ./client
         run: npm ci
 
-      - name: Build client (type check)
+      - name: Build client
         working-directory: ./client
         run: npm run build
 
-      # --- Backend ---
       - name: Install server dependencies
         working-directory: ./server
         run: npm ci
@@ -58,11 +47,8 @@ jobs:
         working-directory: ./server
         run: npm test
 
-  # ─────────────────────────────────────────
-  # Job 2: Build Docker Image
-  # ─────────────────────────────────────────
   build:
-    name: 🐳 Build Docker Image
+    name: Build Docker Images
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -73,33 +59,48 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image (with cache)
+      - name: Build backend image
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: Dockerfile
           push: false
           tags: |
-            ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
-            ${{ env.DOCKER_IMAGE }}:latest
-          outputs: type=docker,dest=/tmp/image.tar
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+            ${{ env.BACKEND_IMAGE }}:latest
+          outputs: type=docker,dest=/tmp/backend-image.tar
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,scope=backend,mode=max
 
-      - name: Compress image
-        run: gzip /tmp/image.tar
+      - name: Build frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: nginx/Dockerfile
+          push: false
+          tags: |
+            ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+            ${{ env.FRONTEND_IMAGE }}:latest
+          outputs: type=docker,dest=/tmp/frontend-image.tar
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,scope=frontend,mode=max
 
-      - name: Upload image artifact
+      - name: Compress images
+        run: |
+          gzip /tmp/backend-image.tar
+          gzip /tmp/frontend-image.tar
+
+      - name: Upload image artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: docker-image
-          path: /tmp/image.tar.gz
+          name: docker-images
+          path: |
+            /tmp/backend-image.tar.gz
+            /tmp/frontend-image.tar.gz
           retention-days: 1
 
-  # ─────────────────────────────────────────
-  # Job 3: Deploy to EC2
-  # ─────────────────────────────────────────
   deploy:
-    name: 🚀 Deploy to EC2
+    name: Deploy to EC2
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -108,30 +109,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download image artifact
+      - name: Download image artifacts
         uses: actions/download-artifact@v4
         with:
-          name: docker-image
+          name: docker-images
+          path: .
 
-      - name: Prepare EC2 (stop app + nginx only, keep DB)
+      - name: Prepare EC2
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "🚀 Starting deployment..."
-            cd ~/app 2>/dev/null || mkdir -p ~/app
-            mkdir -p ~/app/nginx
-
-            # Chỉ dừng app và nginx — GIỮ NGUYÊN postgres + redis
-            docker stop azure-kitchen nginx-proxy 2>/dev/null || true
-            docker rm azure-kitchen nginx-proxy 2>/dev/null || true
-
-            # Dọn image cũ không sử dụng
+            set -e
+            mkdir -p ~/app
+            docker stop azure-kitchen-backend nginx-proxy 2>/dev/null || true
+            docker rm azure-kitchen-backend nginx-proxy 2>/dev/null || true
             docker image prune -f
-
-            echo "✅ App containers cleaned (DB + Redis preserved)"
 
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -139,29 +134,26 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "image.tar.gz,docker-compose.yml,nginx/default.conf"
+          source: "backend-image.tar.gz,frontend-image.tar.gz,docker-compose.yml"
           target: "/tmp/deploy"
 
-      - name: Load image and start containers
+      - name: Load images and start containers
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "📦 Loading Docker image..."
-            docker load < /tmp/deploy/image.tar.gz
+            set -e
 
-            echo "📂 Copying config files..."
+            docker load < /tmp/deploy/backend-image.tar.gz
+            docker load < /tmp/deploy/frontend-image.tar.gz
+
             cp /tmp/deploy/docker-compose.yml ~/app/
-            cp /tmp/deploy/nginx/default.conf ~/app/nginx/
-
             rm -rf /tmp/deploy
 
-            echo "🏃 Starting containers with docker compose..."
             cd ~/app
 
-            # Truyền biến môi trường từ GitHub Secrets
             export APP_VERSION=${{ github.sha }}
             export CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
             export CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
@@ -169,23 +161,19 @@ jobs:
             export JWT_SECRET=${{ secrets.JWT_SECRET }}
             export CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
 
-            docker compose up -d
+            docker compose up -d --no-build --remove-orphans
 
-            echo "⏳ Waiting for health check..."
+            echo "Waiting for health check..."
             sleep 15
 
             if curl -sf http://localhost/api/health > /dev/null; then
-              echo "✅ Deployment successful!"
-              echo "── App Health ──"
-              curl -s http://localhost/api/health | python3 -m json.tool
-              echo ""
-              echo "── Container Status ──"
+              echo "Deployment successful"
               docker compose ps
             else
-              echo "❌ Health check failed!"
-              echo "── App Logs ──"
-              docker compose logs app --tail=50
-              echo "── Nginx Logs ──"
+              echo "Health check failed"
+              echo "Backend logs"
+              docker compose logs backend --tail=50
+              echo "Nginx logs"
               docker compose logs nginx --tail=20
               exit 1
             fi

@@ -1,79 +1,63 @@
 #!/bin/bash
-# ================================================
-# Quick Deploy Script - Deploy manually to EC2
-# Usage: ./scripts/deploy.sh
-# ================================================
 
 set -euo pipefail
 
-APP_NAME="nodejs-cicd-demo"
 EC2_HOST="${EC2_HOST:-3.0.146.139}"
 EC2_USER="${EC2_USER:-ubuntu}"
 SSH_KEY="${SSH_KEY:-~/.ssh/key.pem}"
+APP_DIR="${APP_DIR:-~/app}"
+BACKEND_IMAGE="azure-kitchen-backend:latest"
+FRONTEND_IMAGE="azure-kitchen-frontend:latest"
 
-echo "╔══════════════════════════════════════════╗"
-echo "║   🚀 Manual Deploy - $APP_NAME           ║"
-echo "╚══════════════════════════════════════════╝"
-echo ""
+echo "Running local checks..."
+(cd client && npm ci && npm run build)
+(cd server && npm ci && npm run lint && npm test && npm run build)
 
-# Step 1: Run tests locally
-echo "🧪 Step 1: Running tests..."
-node --test src/tests/ || { echo "❌ Tests failed!"; exit 1; }
-echo "✅ Tests passed!"
-echo ""
+echo "Building Docker images..."
+docker build -t "$BACKEND_IMAGE" -f Dockerfile .
+docker build -t "$FRONTEND_IMAGE" -f nginx/Dockerfile .
 
-# Step 2: Build Docker image
-echo "🐳 Step 2: Building Docker image..."
-docker build -t $APP_NAME:latest .
-echo "✅ Image built!"
-echo ""
+echo "Saving Docker images..."
+docker save "$BACKEND_IMAGE" | gzip > /tmp/backend-image.tar.gz
+docker save "$FRONTEND_IMAGE" | gzip > /tmp/frontend-image.tar.gz
 
-# Step 3: Save and transfer image
-echo "📦 Step 3: Transferring image to EC2..."
-docker save $APP_NAME:latest | gzip > /tmp/$APP_NAME.tar.gz
-scp -i $SSH_KEY -o StrictHostKeyChecking=no /tmp/$APP_NAME.tar.gz $EC2_USER@$EC2_HOST:/tmp/
-rm /tmp/$APP_NAME.tar.gz
-echo "✅ Image transferred!"
-echo ""
+echo "Copying deployment files to EC2..."
+scp -i "$SSH_KEY" -o StrictHostKeyChecking=no \
+  /tmp/backend-image.tar.gz \
+  /tmp/frontend-image.tar.gz \
+  docker-compose.yml \
+  "$EC2_USER@$EC2_HOST:/tmp/"
 
-# Step 4: Deploy on EC2
-echo "🚀 Step 4: Deploying on EC2..."
-ssh -i $SSH_KEY -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'DEPLOY_SCRIPT'
-  APP_NAME="nodejs-cicd-demo"
+rm -f /tmp/backend-image.tar.gz /tmp/frontend-image.tar.gz
 
-  # Stop old container
-  docker stop $APP_NAME 2>/dev/null || true
-  docker rm $APP_NAME 2>/dev/null || true
+echo "Deploying on EC2..."
+ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$EC2_USER@$EC2_HOST" <<'DEPLOY_SCRIPT'
+  set -euo pipefail
 
-  # Load new image
-  docker load < /tmp/$APP_NAME.tar.gz
-  rm /tmp/$APP_NAME.tar.gz
+  APP_DIR="${APP_DIR:-$HOME/app}"
+  mkdir -p "$APP_DIR"
 
-  # Run new container
-  docker run -d \
-    --name $APP_NAME \
-    --restart unless-stopped \
-    -p 3000:3000 \
-    -e NODE_ENV=production \
-    -e APP_VERSION=$(date +%Y%m%d-%H%M%S) \
-    --memory=128m \
-    --cpus=0.5 \
-    $APP_NAME:latest
+  docker stop azure-kitchen-backend nginx-proxy 2>/dev/null || true
+  docker rm azure-kitchen-backend nginx-proxy 2>/dev/null || true
 
-  # Wait and health check
-  sleep 3
-  if curl -sf http://localhost:3000/health > /dev/null; then
-    echo "✅ Deployment successful!"
-    curl -s http://localhost:3000/health | python3 -m json.tool
+  docker load < /tmp/backend-image.tar.gz
+  docker load < /tmp/frontend-image.tar.gz
+  rm -f /tmp/backend-image.tar.gz /tmp/frontend-image.tar.gz
+
+  cp /tmp/docker-compose.yml "$APP_DIR/docker-compose.yml"
+  rm -f /tmp/docker-compose.yml
+
+  cd "$APP_DIR"
+  docker compose up -d --no-build --remove-orphans
+
+  sleep 15
+  if curl -sf http://localhost/api/health > /dev/null; then
+    echo "Deployment successful"
+    docker compose ps
   else
-    echo "❌ Deployment failed!"
-    docker logs $APP_NAME
+    echo "Deployment failed"
+    docker compose logs backend --tail=50
+    docker compose logs nginx --tail=20
     exit 1
   fi
 DEPLOY_SCRIPT
-
-echo ""
-echo "╔══════════════════════════════════════════╗"
-echo "║   ✅ Deploy Complete!                     ║"
-echo "║   🌐 http://$EC2_HOST:3000               ║"
-echo "╚══════════════════════════════════════════╝"
