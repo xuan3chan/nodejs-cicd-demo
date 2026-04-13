@@ -104,6 +104,18 @@ export default function CmsManager() {
     })
   }
 
+  const moveArrayItem = (section, arrayKey, index, direction) => {
+    setEditData((prev) => {
+      const arr = [...(prev[section]?.[arrayKey] || [])]
+      if (direction === 'up' && index > 0) {
+        [arr[index], arr[index - 1]] = [arr[index - 1], arr[index]]
+      } else if (direction === 'down' && index < arr.length - 1) {
+        [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]]
+      }
+      return { ...prev, [section]: { ...prev[section], [arrayKey]: arr } }
+    })
+  }
+
   const hasChanges = (key) => {
     return JSON.stringify(config[key]) !== JSON.stringify(editData[key])
   }
@@ -400,7 +412,17 @@ function renderGalleryForm(data, updateField, updateArrayItem, addArrayItem, rem
                 )}
               </div>
             )}
-            <button className="admin-btn-icon delete" onClick={() => removeArrayItem('gallery', 'images', i)}>🗑️</button>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <button type="button" className="admin-btn-icon" disabled={i === 0} onClick={() => moveArrayItem('gallery', 'images', i, 'up')} title="Lên trên">
+                ⬆️
+              </button>
+              <button type="button" className="admin-btn-icon" disabled={i === items.length - 1} onClick={() => moveArrayItem('gallery', 'images', i, 'down')} title="Xuống dưới">
+                ⬇️
+              </button>
+              <button type="button" className="admin-btn-icon delete" onClick={() => removeArrayItem('gallery', 'images', i)} title="Xóa ảnh">
+                🗑️
+              </button>
+            </div>
           </div>
         ))}
       </div>
