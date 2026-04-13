@@ -20,7 +20,7 @@ export class UploadController {
   @Post()
   @UseInterceptors(
     FileInterceptor('image', {
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+      limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
     }),
   )
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
