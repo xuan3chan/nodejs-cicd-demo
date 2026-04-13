@@ -20,9 +20,10 @@ export class SeedService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.seedMenu();
-    await this.seedAdmin();
-    await this.seedSiteConfig();
+    this.logger.log('Seed is disabled.');
+    // await this.seedMenu();
+    // await this.seedAdmin();
+    // await this.seedSiteConfig();
   }
 
   private async seedAdmin() {
