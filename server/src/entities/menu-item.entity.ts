@@ -22,4 +22,7 @@ export class MenuItemEntity {
 
   @Column()
   image: string;
+
+  @Column({ nullable: true })
+  altText: string;
 }

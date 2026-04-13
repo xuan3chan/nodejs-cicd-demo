@@ -20,6 +20,7 @@ export default function MenuManager() {
     category: '',
     tag: '',
     image: '',
+    altText: '',
   })
 
   const fetchItems = useCallback(async () => {
@@ -41,7 +42,7 @@ export default function MenuManager() {
   }, [fetchItems])
 
   const resetForm = () => {
-    setFormData({ name: '', description: '', price: '', category: '', tag: '', image: '' })
+    setFormData({ name: '', description: '', price: '', category: '', tag: '', image: '', altText: '' })
     setEditingItem(null)
     setShowForm(false)
   }
@@ -78,6 +79,7 @@ export default function MenuManager() {
       category: item.category,
       tag: item.tag || '',
       image: item.image,
+      altText: item.altText || '',
     })
     setEditingItem(item)
     setShowForm(true)
@@ -269,6 +271,15 @@ export default function MenuManager() {
                     <img src={formData.image} alt="Preview" />
                   </div>
                 )}
+              </div>
+              <div className="admin-form-group">
+                <label>Văn bản Alt SEO (Tùy chọn)</label>
+                <input
+                  name="altText"
+                  value={formData.altText}
+                  onChange={handleChange}
+                  placeholder="Mô tả hình ảnh cho Google (VD: Tô bún quậy đầy ắp có chả cá...)"
+                />
               </div>
               <div className="admin-form-actions">
                 <button type="button" className="admin-btn admin-btn-ghost" onClick={cancelForm}>

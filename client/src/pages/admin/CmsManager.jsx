@@ -388,7 +388,8 @@ function renderGalleryForm(data, updateField, updateArrayItem, addArrayItem, rem
               ) : (
                 <Field label="URL / Tải ảnh" value={item.src} onChange={(v) => updateArrayItem('gallery', 'images', i, 'src', v)} type="image" onUploadSuccess={trackUpload} />
               )}
-              <Field label="Nhãn" value={item.label} onChange={(v) => updateArrayItem('gallery', 'images', i, 'label', v)} />
+              <Field label="Nhãn hiển thị (Label)" value={item.label} onChange={(v) => updateArrayItem('gallery', 'images', i, 'label', v)} />
+              <Field label="Văn bản Alt SEO" value={item.altText} onChange={(v) => updateArrayItem('gallery', 'images', i, 'altText', v)} />
             </div>
             {item.src && (
               <div className="admin-image-preview small">

@@ -24,4 +24,8 @@ export class CreateMenuItemDto {
   @IsString()
   @IsNotEmpty()
   image: string;
+
+  @IsString()
+  @IsOptional()
+  altText?: string;
 }
