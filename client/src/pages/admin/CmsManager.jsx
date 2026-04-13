@@ -168,7 +168,7 @@ export default function CmsManager() {
               <div className="cms-section-body">
                 {key === 'hero' && renderHeroForm(editData.hero || {}, updateField)}
                 {key === 'about' && renderAboutForm(editData.about || {}, updateField, updateArrayItem, addArrayItem, removeArrayItem, trackUpload)}
-                {key === 'gallery' && renderGalleryForm(editData.gallery || {}, updateField, updateArrayItem, addArrayItem, removeArrayItem, trackUpload)}
+                {key === 'gallery' && renderGalleryForm(editData.gallery || {}, updateField, updateArrayItem, addArrayItem, removeArrayItem, moveArrayItem, trackUpload)}
                 {key === 'contact' && renderContactForm(editData.contact || {}, updateField)}
                 {key === 'footer' && renderFooterForm(editData.footer || {}, updateField, updateNestedField)}
 
@@ -365,7 +365,7 @@ function renderAboutForm(data, updateField, updateArrayItem, addArrayItem, remov
   )
 }
 
-function renderGalleryForm(data, updateField, updateArrayItem, addArrayItem, removeArrayItem, trackUpload) {
+function renderGalleryForm(data, updateField, updateArrayItem, addArrayItem, removeArrayItem, moveArrayItem, trackUpload) {
   const items = data.images || []
   const stats = data.stats || []
 
