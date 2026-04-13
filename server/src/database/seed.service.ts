@@ -243,10 +243,15 @@ export class SeedService implements OnModuleInit {
       {
         key: 'contact',
         value: {
-          address: '123 Nguyễn Huệ, Quận 1, TP.HCM',
+          address:
+            '86 Đường Nguyễn Minh Đường, Đạo Thạnh, Đồng Tháp 84000, Việt Nam',
           phone: '(028) 3823 4567',
           hours: '10:00 — 22:00 hàng ngày',
           email: 'hello@bunquay79.io.vn',
+          mapUrl:
+            'https://www.google.com/maps/place/B%C3%BAn+Qu%E1%BA%ADy+79/@10.3704491,106.3630276,16.5z/data=!4m6!3m5!1s0x310aaf0039b3586f:0xb93a1f3525c5ff5f!8m2!3d10.3719504!4d106.364641!16s%2Fg%2F11w4mmgt0b?hl=vi&entry=ttu&g_ep=EgoyMDI2MDQwOC4wIKXMDSoASAFQAw%3D%3D',
+          mapEmbed:
+            'https://maps.google.com/maps?q=B%C3%BAn+Qu%E1%BA%ADy+79,+86+%C4%90%C6%B0%E1%BB%9Dng+Nguy%E1%BB%85n+Minh+%C4%90%C6%B0%E1%BB%9Dng&t=&z=15&ie=UTF8&iwloc=&output=embed',
         },
       },
       {

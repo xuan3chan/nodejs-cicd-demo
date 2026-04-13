@@ -429,7 +429,10 @@ function renderContactForm(data, updateField) {
   return (
     <div className="cms-form">
       <Field label="Địa chỉ" value={data.address} onChange={(v) => updateField('contact', 'address', v)} type="textarea" rows={3} />
-      <Field label="Link Google Map" value={data.mapUrl} onChange={(v) => updateField('contact', 'mapUrl', v)} />
+      <div className="admin-form-grid">
+        <Field label="Link Google Map (mở tab mới)" value={data.mapUrl} onChange={(v) => updateField('contact', 'mapUrl', v)} />
+        <Field label="Link iframe bản đồ (embed SRC)" value={data.mapEmbed} onChange={(v) => updateField('contact', 'mapEmbed', v)} />
+      </div>
       <div className="admin-form-grid">
         <Field label="Số điện thoại" value={data.phone} onChange={(v) => updateField('contact', 'phone', v)} />
         <Field label="Email" value={data.email} onChange={(v) => updateField('contact', 'email', v)} />

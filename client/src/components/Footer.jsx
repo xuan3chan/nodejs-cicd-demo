@@ -53,16 +53,28 @@ export default function Footer() {
           {/* Contact */}
           <div className="footer-column">
             <h4 className="footer-column-title">Liên hệ</h4>
-            <div className="footer-links">
-              {contact.mapUrl ? (
-                <a href={contact.mapUrl} target="_blank" rel="noopener noreferrer" className="footer-link" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', color: 'inherit' }}>
-                  {contact.address || '123 Nguyễn Huệ'}
-                </a>
-              ) : (
-                <span className="footer-link" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{contact.address || '123 Nguyễn Huệ'}</span>
-              )}
-              <span className="footer-link">{contact.phone || '(028) 3823 4567'}</span>
-              <a href={`mailto:${contact.email || 'hello@azurekitchen.vn'}`} className="footer-link">{contact.email || 'hello@azurekitchen.vn'}</a>
+            <div className="footer-links" style={{ marginBottom: '16px' }}>
+              <a 
+                href={contact.mapUrl || `https://www.google.com/maps/place/B%C3%BAn+Qu%E1%BA%ADy+79/@10.3704491,106.3630276,16.5z/data=!4m6!3m5!1s0x310aaf0039b3586f:0xb93a1f3525c5ff5f!8m2!3d10.3719504!4d106.364641!16s%2Fg%2F11w4mmgt0b?hl=vi&entry=ttu&g_ep=EgoyMDI2MDQwOC4wIKXMDSoASAFQAw%3D%3D`}
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="footer-link footer-address-link"
+              >
+                <span className="footer-address-icon" aria-hidden="true">📍</span>
+                <span>{contact.address || '86 Đường Nguyễn Minh Đường, Đạo Thạnh, Đồng Tháp 84000, Việt Nam'}</span>
+              </a>
+              <span className="footer-link">☎️ {contact.phone || '(028) 3823 4567'}</span>
+              <a href={`mailto:${contact.email || 'hello@bunquay79.io.vn'}`} className="footer-link">✉️ {contact.email || 'hello@bunquay79.io.vn'}</a>
+            </div>
+
+            {/* Embedded Map */}
+            <div className="footer-map">
+              <iframe
+                src={contact.mapEmbed || 'https://maps.google.com/maps?q=B%C3%BAn+Qu%E1%BA%ADy+79,+86+%C4%90%C6%B0%E1%BB%9Dng+Nguy%E1%BB%85n+Minh+%C4%90%C6%B0%E1%BB%9Dng&t=&z=15&ie=UTF8&iwloc=&output=embed'}
+                title="Vị trí Bún Quậy 79"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
           </div>
         </div>
