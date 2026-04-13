@@ -4,6 +4,21 @@ import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import { useSiteConfig } from '../context/SiteConfigContext'
 import './Reservation.css'
 
+const generateTimeOptions = (startHour, endHour) => {
+  const times = [];
+  for (let h = startHour; h <= endHour; h++) {
+    const hourStr = h.toString().padStart(2, '0');
+    times.push(`${hourStr}:00`);
+    if (h !== endHour) {
+      times.push(`${hourStr}:30`);
+    }
+  }
+  return times;
+};
+
+const morningTimes = generateTimeOptions(6, 12);
+const eveningTimes = generateTimeOptions(16, 22);
+
 
 
 export default function Reservation() {
@@ -159,15 +174,16 @@ export default function Reservation() {
                       required
                     >
                       <option value="">Chọn giờ</option>
-                      <option value="10:00">10:00</option>
-                      <option value="11:00">11:00</option>
-                      <option value="12:00">12:00</option>
-                      <option value="13:00">13:00</option>
-                      <option value="17:00">17:00</option>
-                      <option value="18:00">18:00</option>
-                      <option value="19:00">19:00</option>
-                      <option value="20:00">20:00</option>
-                      <option value="21:00">21:00</option>
+                      <optgroup label="Ca Sáng (06:00 - 12:00)">
+                        {morningTimes.map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Ca Chiều (16:00 - 22:00)">
+                        {eveningTimes.map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </optgroup>
                     </select>
                   </div>
                 </div>

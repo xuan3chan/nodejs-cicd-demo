@@ -20,10 +20,26 @@ export default function Footer() {
               {footer.brandDesc || 'Nơi hội tụ tinh hoa ẩm thực trong không gian thanh lịch. Chúng tôi mang đến trải nghiệm ẩm thực đáng nhớ cho mỗi thực khách.'}
             </p>
             <div className="footer-socials">
-              <a href={footer.socials?.facebook || '#'} className="footer-social-link" aria-label="Facebook" id="social-fb">📘</a>
-              <a href={footer.socials?.instagram || '#'} className="footer-social-link" aria-label="Instagram" id="social-ig">📸</a>
-              <a href={footer.socials?.tiktok || '#'} className="footer-social-link" aria-label="TikTok" id="social-tt">🎵</a>
-              <a href={footer.socials?.youtube || '#'} className="footer-social-link" aria-label="YouTube" id="social-yt">▶️</a>
+              {footer.socials?.facebook && (
+                <a href={footer.socials.facebook} target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="Facebook" id="social-fb">
+                  <span>📘</span> Facebook
+                </a>
+              )}
+              {footer.socials?.instagram && (
+                <a href={footer.socials.instagram} target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="Instagram" id="social-ig">
+                  <span>📸</span> Instagram
+                </a>
+              )}
+              {footer.socials?.tiktok && (
+                <a href={footer.socials.tiktok} target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="TikTok" id="social-tt">
+                  <span>🎵</span> TikTok
+                </a>
+              )}
+              {footer.socials?.youtube && (
+                <a href={footer.socials.youtube} target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="YouTube" id="social-yt">
+                  <span>▶️</span> YouTube
+                </a>
+              )}
             </div>
           </div>
 
