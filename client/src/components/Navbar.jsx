@@ -30,7 +30,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
+    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar" role="navigation" aria-label="Main navigation">
       <div className="navbar-inner">
         <a href="#" className="navbar-logo">
           <img src="/logo.png" alt="BQ79" className="navbar-logo-img" />

@@ -14,7 +14,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="footer-brand">
             <div className="footer-brand-name">
-              <img alt="BQ79" className="footer-logo-img" src="/logo.png" />
+              <img alt="Logo Bún Quậy 79 — Ẩm thực vị biển" className="footer-logo-img" src="/logo.png" />
             </div>
             <p className="footer-brand-desc">
               {footer.brandDesc || 'Nơi hội tụ tinh hoa ẩm thực trong không gian thanh lịch. Chúng tôi mang đến trải nghiệm ẩm thực đáng nhớ cho mỗi thực khách.'}
