@@ -104,7 +104,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.7 }}
         >
-          {hero.description || 'Nơi hội tụ tinh hoa ẩm thực Việt Nam và quốc tế trong không gian thanh lịch, mang đến cho bạn những khoảnh khắc đáng nhớ bên gia đình và bạn bè.'}
+          {hero.description || 'Bún Quậy 79 — Quán bún quậy vị biển nổi tiếng tại Đồng Tháp. Thưởng thức bún quậy tươi ngon, chả cá đặc biệt cùng không gian ấm cúng bên gia đình và bạn bè.'}
         </motion.p>
 
         <motion.div
