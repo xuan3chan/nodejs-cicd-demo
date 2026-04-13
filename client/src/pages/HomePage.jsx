@@ -1,11 +1,13 @@
+import React, { Suspense } from 'react'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
-import Menu from '../components/Menu'
-import About from '../components/About'
-import Gallery from '../components/Gallery'
-import Reservation from '../components/Reservation'
-import Footer from '../components/Footer'
 import { SiteConfigProvider } from '../context/SiteConfigContext'
+
+const Menu = React.lazy(() => import('../components/Menu'))
+const About = React.lazy(() => import('../components/About'))
+const Gallery = React.lazy(() => import('../components/Gallery'))
+const Reservation = React.lazy(() => import('../components/Reservation'))
+const Footer = React.lazy(() => import('../components/Footer'))
 
 export default function HomePage() {
   return (
@@ -13,12 +15,16 @@ export default function HomePage() {
       <Navbar />
       <main>
         <Hero />
-        <Menu />
-        <About />
-        <Gallery />
-        <Reservation />
+        <Suspense fallback={<div style={{ padding: '50px', textAlign: 'center' }}>Đang tải...</div>}>
+          <Menu />
+          <About />
+          <Gallery />
+          <Reservation />
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </SiteConfigProvider>
   )
 }

@@ -4,12 +4,12 @@ import { useSiteConfig } from '../context/SiteConfigContext'
 import './Gallery.css'
 
 const defaultImages = [
-  { src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop', label: 'Không gian nhà hàng' },
-  { src: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=400&h=300&fit=crop', label: 'Quầy bar' },
-  { src: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop', label: 'Món khai vị' },
-  { src: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=800&h=300&fit=crop', label: 'Bàn tiệc' },
-  { src: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop', label: 'Pizza đặc biệt' },
-  { src: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=300&fit=crop', label: 'Khu vực ngoài trời' },
+  { src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop&auto=format', label: 'Không gian nhà hàng' },
+  { src: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=400&h=300&fit=crop&auto=format', label: 'Quầy bar' },
+  { src: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop&auto=format', label: 'Món khai vị' },
+  { src: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=800&h=300&fit=crop&auto=format', label: 'Bàn tiệc' },
+  { src: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop&auto=format', label: 'Pizza đặc biệt' },
+  { src: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=300&fit=crop&auto=format', label: 'Khu vực ngoài trời' },
 ]
 
 const defaultStats = [
