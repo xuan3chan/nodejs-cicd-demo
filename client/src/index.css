@@ -43,7 +43,7 @@
   --glass-shadow: 0 8px 32px rgba(59, 130, 246, 0.08);
   --glass-blur: blur(16px);
 
-  /* Typography */
+  /* Typography (Google Fonts loaded with display=swap) */
   --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 

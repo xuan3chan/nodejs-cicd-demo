@@ -74,7 +74,7 @@ export default function Menu() {
                 }}
               >
                 <div className="menu-item-image">
-                  <img src={item.image} alt={item.name} loading="lazy" />
+                  <img src={item.image} alt={item.name} loading="lazy" width="400" height="300" />
                   {item.tag && (
                     <span className={`menu-item-tag ${item.tag}`}>
                       {item.tag === 'popular' ? '⭐ Phổ biến' : item.tag}

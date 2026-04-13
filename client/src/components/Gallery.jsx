@@ -69,7 +69,7 @@ export default function Gallery() {
                   preload="metadata"
                 />
               ) : (
-                <img src={item.src} alt={item.label} loading="lazy" />
+                <img src={item.src} alt={item.label} loading="lazy" width="400" height="300" />
               )}
               <div className="gallery-item-overlay">
                 {isVideoUrl(item.src) && <span className="gallery-video-badge">▶ VIDEO</span>}

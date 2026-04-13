@@ -33,7 +33,7 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar" role="navigation" aria-label="Main navigation">
       <div className="navbar-inner">
         <a href="#" className="navbar-logo">
-          <img src="/logo.png" alt="BQ79" className="navbar-logo-img" />
+          <img src="/logo.png" alt="BQ79" className="navbar-logo-img" width="48" height="48" />
         </a>
 
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>

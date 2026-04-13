@@ -88,7 +88,7 @@
 
 .footer-link {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
   transition: color var(--transition-fast);
   padding: 4px 0;
 }
