@@ -31,7 +31,6 @@ export default function About() {
               <img
                 src={about.image || 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=500&fit=crop'}
                 alt="Không gian nhà hàng Bún Quậy 79"
-                loading="lazy"
                 width="600"
                 height="500"
               />
