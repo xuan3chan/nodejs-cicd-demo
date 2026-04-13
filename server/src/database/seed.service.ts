@@ -19,7 +19,7 @@ export class SeedService implements OnModuleInit {
     private readonly configRepository: Repository<SiteConfigEntity>,
   ) {}
 
-  async onModuleInit() {
+  onModuleInit() {
     this.logger.log('Seed is disabled.');
     // await this.seedMenu();
     // await this.seedAdmin();
