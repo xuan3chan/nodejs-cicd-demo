@@ -4,9 +4,9 @@ import { useSiteConfig } from '../context/SiteConfigContext'
 import './About.css'
 
 const defaultFeatures = [
+  { icon: '🍜', title: 'Bún Quậy Cách Ăn', desc: 'Tự tay quậy nước chấm chuẩn vị' },
   { icon: '🥬', title: 'Nguyên Liệu Tươi', desc: 'Nhập hàng ngày từ nông trại' },
   { icon: '👨‍🍳', title: 'Đầu Bếp Tài Năng', desc: '15+ năm kinh nghiệm' },
-  { icon: '🌿', title: 'Công Thức Gia Truyền', desc: 'Hương vị truyền thống' },
   { icon: '❤️', title: 'Phục Vụ Tận Tâm', desc: 'Sự hài lòng là ưu tiên' },
 ]
 
@@ -56,7 +56,7 @@ export default function About() {
           >
             <div className="about-eyebrow">{about.eyebrow || 'Về Chúng Tôi'}</div>
             <h2 className="section-title">
-              {about.title || 'Câu Chuyện Của'}<br />{about.titleLine2 || 'Bún Quậy 79'}
+              {about.title || 'Câu Chuyện Của'}<br />{about.titleLine2 || 'Bún Quậy – Phú Quốc'}
             </h2>
             <p className="about-text">
               {about.paragraph1 || 'Được thành lập từ niềm đam mê với ẩm thực Việt Nam, Bún Quậy 79 là nơi giao thoa giữa truyền thống và hiện đại. Mỗi món ăn là một câu chuyện, được chế biến từ những nguyên liệu tươi ngon nhất, theo công thức gia truyền đã được gìn giữ qua nhiều thế hệ.'}

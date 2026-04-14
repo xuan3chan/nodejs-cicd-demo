@@ -17,7 +17,7 @@ export default function Footer() {
               <img alt="Logo Bún Quậy 79 — Ẩm thực vị biển" className="footer-logo-img" src="/logo.png" loading="lazy" width="120" height="120" />
             </div>
             <p className="footer-brand-desc">
-              {footer.brandDesc || 'Nơi hội tụ tinh hoa ẩm thực trong không gian thanh lịch. Chúng tôi mang đến trải nghiệm ẩm thực đáng nhớ cho mỗi thực khách.'}
+              {footer.brandDesc || 'Thưởng thức món ngon mỗi ngày với đặc sản Bún Quậy Phú Quốc. Nơi hội tụ tinh hoa ẩm thực đường phố Việt Nam trong không gian thanh lịch và ấm cúng.'}
             </p>
             <div className="footer-socials">
               {footer.socials?.facebook && (

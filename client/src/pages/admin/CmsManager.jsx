@@ -10,6 +10,7 @@ const sectionLabels = {
   gallery: { label: '🖼️ Bộ Sưu Tập', desc: 'Hình ảnh gallery và số liệu thống kê' },
   contact: { label: '📞 Liên Hệ', desc: 'Địa chỉ, số điện thoại, email, giờ mở cửa' },
   footer: { label: '📋 Footer', desc: 'Mô tả, giờ mở cửa, liên kết mạng xã hội' },
+  seo: { label: '🔍 SEO & Meta Tags', desc: 'Thẻ tiêu đề, mô tả, từ khóa cho Google & Facebook' },
 }
 
 export default function CmsManager() {
@@ -171,6 +172,7 @@ export default function CmsManager() {
                 {key === 'gallery' && renderGalleryForm(editData.gallery || {}, updateField, updateArrayItem, addArrayItem, removeArrayItem, moveArrayItem, trackUpload)}
                 {key === 'contact' && renderContactForm(editData.contact || {}, updateField)}
                 {key === 'footer' && renderFooterForm(editData.footer || {}, updateField, updateNestedField)}
+                {key === 'seo' && renderSeoForm(editData.seo || {}, updateField, trackUpload)}
 
                 <div className="cms-section-actions">
                   <button
@@ -480,6 +482,24 @@ function renderFooterForm(data, updateField, updateNestedField) {
         <Field label="TikTok URL" value={data.socials?.tiktok} onChange={(v) => updateNestedField('footer', 'socials', 'tiktok', v)} />
         <Field label="YouTube URL" value={data.socials?.youtube} onChange={(v) => updateNestedField('footer', 'socials', 'youtube', v)} />
       </div>
+    </div>
+  )
+}
+
+function renderSeoForm(data, updateField, trackUpload) {
+  return (
+    <div className="cms-form">
+      <div className="admin-form-group">
+        <label>Gợi ý từ khóa SEO của bạn</label>
+        <div style={{ fontSize: '0.8rem', color: '#94a3b8', background: '#1e293b', padding: '10px', borderRadius: '8px', marginBottom: '16px', border: '1px dashed #334155' }}>
+          💡 <strong>Từ khóa được yêu cầu:</strong> món ngon mỗi ngày, bún quậy – phú quốc, bún quậy cách ăn, ẩm thực đường phố, ẩm thực đường phố việt nam
+        </div>
+      </div>
+      <Field label="Tiêu đề trang (Meta Title)" value={data.title} onChange={(v) => updateField('seo', 'title', v)} />
+      <Field label="Mô tả trang (Meta Description)" value={data.description} onChange={(v) => updateField('seo', 'description', v)} type="textarea" rows={3} />
+      <Field label="Từ khóa (Meta Keywords - cách nhau bằng dấu phẩy)" value={data.keywords} onChange={(v) => updateField('seo', 'keywords', v)} type="textarea" rows={2} />
+      <Field label="Ảnh chia sẻ Facebook (OG Image)" value={data.ogImage} onChange={(v) => updateField('seo', 'ogImage', v)} type="image" onUploadSuccess={trackUpload} />
+      {data.ogImage && <div className="admin-image-preview"><img src={data.ogImage} alt="OG Preview" /></div>}
     </div>
   )
 }

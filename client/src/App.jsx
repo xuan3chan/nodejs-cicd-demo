@@ -11,9 +11,12 @@ function ProtectedRoute({ children }) {
   return children
 }
 
+import SEO from './components/seo/SEO'
+
 function App() {
   return (
     <BrowserRouter>
+      <SEO />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/admin/login" element={<LoginPage />} />
